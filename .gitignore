@@ -90,3 +90,4 @@ ENV/
 
 # Numpy data files
 *.npy
+*.h5

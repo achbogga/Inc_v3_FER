@@ -7,7 +7,7 @@ def define_inc_v3_model_to_json(dest="Inceptionv3_CNN_CKplus_model.json", weight
 	if K.image_dim_ordering() == "th":
             base_model=InceptionV3(weights=weights_init, include_top=False, input_shape=(img_chs, img_rows, img_cols))
         else:
-            base_model=InceptionV3(weights=None, include_top=False, input_shape=(150, 150, 3))
+            base_model=InceptionV3(weights=None, include_top=False, input_shape=(img_rows, img_cols, img_chs))
 	# add a global spatial average pooling layer
 	x = base_model.output
 	x = GlobalAveragePooling2D()(x)
