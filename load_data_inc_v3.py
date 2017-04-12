@@ -101,10 +101,10 @@ def prepare_for_inc_v3(img_rows=299, img_cols=299, img_chs=3, out_put_classes=7,
 	if (asGray):
 		name_gray = True
 	info = str(name_gray) + "_" + str(img_rows) + "_" + str(img_cols)+ "_" + str(img_chs)
-	name_X_train = ("X_train_"+info)
-	name_X_test = ("X_test_"+info)
-	name_Y_train = ("Y_train_"+info)
-	name_Y_test = ("Y_test_"+info)
+	name_X_train = ("npy/X_train_"+info)
+	name_X_test = ("npy/X_test_"+info)
+	name_Y_train = ("npy/Y_train_"+info)
+	name_Y_test = ("npy/Y_test_"+info)
 	# In[18]:
 
 	print("Training matrix shape", X_train.shape)
