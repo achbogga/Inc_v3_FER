@@ -3,14 +3,17 @@
 import sys
 import numpy as np
 from keras.models import model_from_json
-from keras.optimizers import Adam, SGD,
+from keras.optimizers import Adam, SGD
 from keras.callbacks import ReduceLROnPlateau, CSVLogger
 from keras.preprocessing.image import ImageDataGenerator
 
-def train_network(augment_data=True, nb_epochs=200, batch_size=32, loss='categorical_crossentropy', optim = 'adam', X_train = np.load("npy/X_train_True_299_299_3.npy"), X_test = np.load("npy/X_test_True_299_299_3.npy"), Y_train = np.load("npy/Y_train_True_299_299_3.npy"), Y_test = np.load("npy/Y_test_True_299_299_3.npy"), model_from = "Inceptionv3_CNN_CKplus_model.json", logger=True, lr_reduce=True, min_lr = 0.0001, metrics = ['accuracy']):
+def train_network(augment_data, nb_epochs, batch_size, loss, optim, X_train, X_test, Y_train, Y_test, model_from, logger=True, lr_reduce=True, min_lr = 0.0001, metrics = ['accuracy']):
 
 #------------------------dataaugmentation---------------------------------------------------#
-
+	print ('Augment Data: ', augment_data)
+	print ('No. of epochs: ', nb_epochs)
+	print ('Batch size: ', batch_size)
+	
 	if (augment_data):
 
 		datagen = ImageDataGenerator(
@@ -46,8 +49,9 @@ def train_network(augment_data=True, nb_epochs=200, batch_size=32, loss='categor
 
 	model = loaded_model
 	#nb_epochs = int(argv[0])
+	meta_data = model_from+'_'+str(nb_epochs)+'_'+str(X_train.shape[0])+'_'+str(X_train.shape[1])+'_'+str(X_train.shape[3])
 	if logger:
-		csv_logger = CSVLogger('log/training_from_scratch_'+'Inc_v3_'+str(nb_epochs)+'.log', separator=',', append=False)
+		csv_logger = CSVLogger('log/training_from_scratch_'+meta_data+'.log', separator=',', append=False)
 	if lr_reduce:
 		reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, min_lr=min_lr)
 
@@ -66,10 +70,10 @@ def train_network(augment_data=True, nb_epochs=200, batch_size=32, loss='categor
 
 		model.fit_generator(datagen.flow(X_train, Y_train, batch_size=batch_size), callbacks=callbacks, nb_epoch= int(nb_epochs), samples_per_epoch=len(X_train), validation_data=(X_test, Y_test))
 	else:
-		model.fit(X_train, Y_train, callbacks = callbacks , batch_size=batch_size, nb_epoch = nb_epochs, verbose=1, validation_data=(X_test, Y_test), metrics=metrics)
+		model.fit(X_train, Y_train, callbacks = callbacks , batch_size=batch_size, nb_epoch = nb_epochs, verbose=1, validation_data=(X_test, Y_test))
 
 	loss, accuracy = model.evaluate(X_test,Y_test, verbose=0)
-	metrics_file = open('metrics/Inc_v3_CNN_CKplus_reload_v_data_augmented_metrics.txt', 'a')
+	metrics_file = open('metrics/'+meta_data+'_metrics.log', 'w')
 	metrics_file.write("\nloss: "+str(float(loss))+"\n")
 	metrics_file.write("accuracy: "+str(float(accuracy)))
 	metrics_file.write("\nOptimizer, epochs: sgd_initlr=0.01, "+str(nb_epochs))
