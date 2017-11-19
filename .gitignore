@@ -96,3 +96,12 @@ h5/
 
 #compiled files
 .pyc
+
+npy/*
+log/*
+metrics/*
+h5/*
+*.h5
+*.npy
+*.log
+*.json
